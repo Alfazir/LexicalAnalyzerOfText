@@ -12,10 +12,11 @@ namespace LAOT
     {
         static void Main(string[] args)
         {
-            string path = @"C:\test\test.fb2";
+            string path = @"C:\test\test1.txt";
             string line;
 
-            var Lexemes = new Dictionary<string, int>();
+            var Lexemes = new Dictionary<string, int>(); // словарь лексем
+
 
             if (File.Exists(path))
             {
@@ -31,11 +32,13 @@ namespace LAOT
 
                     while ((line = file.ReadLine()) != null)
                     {
-                        //   string tagPattern = @"<[^>]"; 
-                        //  Regex tagRegex = new Regex(tagPattern);
-                        //  file = tagRegex.Replace(file, @"\s");
 
-
+                        #region Удаляем всё лишнее
+                        string tagPattern = @"<[^>]*>"; 
+                         Regex tagRegex = new Regex(tagPattern);
+                         line = tagRegex.Replace(line, @" ");
+                        line = new string(line.Where(c => !char.IsPunctuation(c)).ToArray()).ToLower();
+                        #endregion
 
                         /* string [] text = line.Split();
 
@@ -52,12 +55,28 @@ namespace LAOT
                         string[] text = Regex.Split(line, pattern);
                         foreach (string item in text)
                         {
+                            if (item != "")
+                            {
+                                //Console.WriteLine($"{item}");
+                                try
+                                {
+                                    Lexemes.Add(item, 1);
+                                }
 
-                            Console.WriteLine($"{item}");
+                                catch
+                                {
+                                    Lexemes[item] = ++Lexemes[item];
+                                }
+                               // Console.WriteLine($" {item}    {Lexemes[item]}");
+                            }
                         }
 
 
 
+                    }
+                    foreach (var lexem in Lexemes)
+                    {
+                        Console.WriteLine($"{lexem.Key} {lexem.Value}");
                     }
                 }
                 finally
