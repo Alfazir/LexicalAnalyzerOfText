@@ -25,19 +25,17 @@ namespace LAOT
                 {
                     file = new StreamReader(path, Encoding.UTF8);   // считываем файл
 
-                   
-            
-
-
 
                     while ((line = file.ReadLine()) != null)
                     {
 
                         #region Удаляем всё лишнее
-                        string tagPattern = @"<[^>]*>"; 
+                        string tagPattern = @"<[^>]*>"; // удаляем тэги
                          Regex tagRegex = new Regex(tagPattern);
-                         line = tagRegex.Replace(line, @" ");
-                        line = new string(line.Where(c => !char.IsPunctuation(c)).ToArray()).ToLower();
+                         line = tagRegex.Replace(line, @" "); // ghj,tks
+                        line = Regex.Replace(line, "[!\"#$%&()*+,./:;<=>?@\\[\\]^_`{|}~][^0-9]", " ");
+                        
+                      //   line = new string(line.Where(c => !char.IsPunctuation(c) ).ToArray()).ToLower();
                         #endregion
 
                         /* string [] text = line.Split();
@@ -74,10 +72,18 @@ namespace LAOT
 
 
                     }
-                    foreach (var lexem in Lexemes)
+
+                    //var myList = Lexemes.ToList();
+                  ///  myList.Sort();
+                    foreach (KeyValuePair<string, int> keyValuePair in Lexemes.OrderBy(key => key.Value).Reverse())
+                    {
+                        Console.WriteLine($"{keyValuePair.Key} {keyValuePair.Value}");
+                    }
+
+                   /* foreach (var lexem in Lexemes)
                     {
                         Console.WriteLine($"{lexem.Key} {lexem.Value}");
-                    }
+                    }*/
                 }
                 finally
                 {
