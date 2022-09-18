@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.Text;
 using System.Text.RegularExpressions;
-using System.Reflection;
+
 
 namespace LAOT
 {
@@ -20,20 +15,14 @@ namespace LAOT
             path = Console.ReadLine();
             Console.WriteLine(File.Exists(path) ? "Файл найден, начинаем разбор..." : "Файл не найден!");
             string line;
-
-            var Lexemes = new Dictionary<string, int>(); // словарь лексем
-
+            var Lexemes = new Dictionary<string, int>(); 
 
             if (File.Exists(path))
             {
-                
                 StreamReader file = null;
                 try
                 {
-                    file = new StreamReader(path, Encoding.UTF8);   // считываем файл
-
-                  
-                    //Console.WriteLine("Файл найден, начинаем разбор...");
+                    file = new StreamReader(path, Encoding.UTF8);   
 
                     while ((line = file.ReadLine()) != null)
                     {
@@ -46,19 +35,7 @@ namespace LAOT
                         line = Regex.Replace(line, "--", " ").ToLower();
                         line = Regex.Replace(line, "[[*]", " ");
                         line = Regex.Replace(line, "[0-9]", "");
-                        //   line = new string(line.Where(c => !char.IsPunctuation(c) ).ToArray()).ToLower();
-                       
 
-                        /* string [] text = line.Split();
-
-                           foreach ( string item in text)
-                           {
-                              Console.WriteLine($"{item}");
-                           }
-
-                        //  Console.WriteLine(text.L);*/
-                        //string pattern = @"[ !?\0n]";
-                        //string pattern =@"[^\w\r\n\t\s]";
                         string pattern = @"[\s]";
 
                         string[] text = Regex.Split(line, pattern);
@@ -68,7 +45,6 @@ namespace LAOT
                         {
                             if (item != "")
                             {
-                                //Console.WriteLine($"{item}");
                                 try
                                 {
                                     Lexemes.Add(item, 1);
@@ -78,7 +54,6 @@ namespace LAOT
                                 {
                                     Lexemes[item] = ++Lexemes[item];
                                 }
-                               // Console.WriteLine($" {item}    {Lexemes[item]}");
                             }
                         }
 
@@ -86,21 +61,16 @@ namespace LAOT
 
                     }
 
-                    //var myList = Lexemes.ToList();
-                  ///  myList.Sort();
+
                     foreach (KeyValuePair<string, int> keyValuePair in Lexemes.OrderBy(key => key.Value).Reverse())
                     {
-                       // StreamWriter sw = new StreamWriter(@"C:\test\LexicalAnalyz.txt");
+
 
 
                         Console.WriteLine($"{keyValuePair.Key} {keyValuePair.Value}");
                         File.AppendAllText(pathResult, $"{keyValuePair.Key} {keyValuePair.Value}{Environment.NewLine}", Encoding.UTF8);
                     }
 
-                   /* foreach (var lexem in Lexemes)
-                    {
-                        Console.WriteLine($"{lexem.Key} {lexem.Value}");
-                    }*/
                 }
                 finally
                 {
@@ -110,9 +80,7 @@ namespace LAOT
 
             }
 
-            // Console.Read();
-
-
+            Console.Read();
         }
     }
 }
