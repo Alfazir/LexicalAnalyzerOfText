@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace LAOT
 {
@@ -12,7 +13,12 @@ namespace LAOT
     {
         static void Main(string[] args)
         {
-            string path = @"C:\test\test1.txt";
+            string path = @"C:\test\test2.fb2";
+            string pathResult = @$".\LexicalAnalyz.txt";
+
+            Console.WriteLine("Укажите путь к текстовому файлу:");
+            path = Console.ReadLine();
+            Console.WriteLine(File.Exists(path) ? "Файл найден, начинаем разбор..." : "Файл не найден!");
             string line;
 
             var Lexemes = new Dictionary<string, int>(); // словарь лексем
@@ -20,23 +26,28 @@ namespace LAOT
 
             if (File.Exists(path))
             {
+                
                 StreamReader file = null;
                 try
                 {
                     file = new StreamReader(path, Encoding.UTF8);   // считываем файл
 
+                  
+                    //Console.WriteLine("Файл найден, начинаем разбор...");
 
                     while ((line = file.ReadLine()) != null)
                     {
-
+                        
                         #region Удаляем всё лишнее
                         string tagPattern = @"<[^>]*>"; // удаляем тэги
                          Regex tagRegex = new Regex(tagPattern);
                          line = tagRegex.Replace(line, @" "); // ghj,tks
                         line = Regex.Replace(line, "[!\"#$%&()*+,./:;<=>?@\\[\\]^_`{|}~][^0-9]", " ");
-                        
-                      //   line = new string(line.Where(c => !char.IsPunctuation(c) ).ToArray()).ToLower();
-                        #endregion
+                        line = Regex.Replace(line, "--", " ").ToLower();
+                        line = Regex.Replace(line, "[[*]", " ");
+                        line = Regex.Replace(line, "[0-9]", "");
+                        //   line = new string(line.Where(c => !char.IsPunctuation(c) ).ToArray()).ToLower();
+                       
 
                         /* string [] text = line.Split();
 
@@ -51,6 +62,8 @@ namespace LAOT
                         string pattern = @"[\s]";
 
                         string[] text = Regex.Split(line, pattern);
+                        #endregion
+
                         foreach (string item in text)
                         {
                             if (item != "")
@@ -77,7 +90,11 @@ namespace LAOT
                   ///  myList.Sort();
                     foreach (KeyValuePair<string, int> keyValuePair in Lexemes.OrderBy(key => key.Value).Reverse())
                     {
+                       // StreamWriter sw = new StreamWriter(@"C:\test\LexicalAnalyz.txt");
+
+
                         Console.WriteLine($"{keyValuePair.Key} {keyValuePair.Value}");
+                        File.AppendAllText(pathResult, $"{keyValuePair.Key} {keyValuePair.Value}{Environment.NewLine}", Encoding.UTF8);
                     }
 
                    /* foreach (var lexem in Lexemes)
